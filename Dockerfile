@@ -3,13 +3,16 @@ MAINTAINER koopzington@gmail.com
 
 # Install PHP extensions and PECL modules.
 RUN buildDeps=" \
-        bzip2-dev \
-        libmemcached-dev \
         icu-dev \
+        g++ \
+        make \
+        autoconf \
     " \
     runtimeDeps=" \
         git \
         openssh-client \
+        bzip2-dev \
+        libmemcached-dev \
         libpng-dev \
         libxml2-dev \
         gettext-dev \
@@ -18,13 +21,13 @@ RUN buildDeps=" \
         libxslt-dev \
         openldap-dev \
     " \
-    && apk update && apk add --no-cache -y $buildDeps $runtimeDeps \
-    && docker-php-ext-install bcmath bz2 calendar gd gettext iconv intl ldap mysqli opcache pdo_mysql pdo_pgsql  \
-    && docker-php-ext-install pdo_sqlite pgsql soap xsl zip \
+    && apk update && apk add --no-cache $buildDeps $runtimeDeps \
+    && docker-php-ext-install bcmath bz2 calendar gd gettext intl ldap mysqli opcache pdo_mysql pdo_pgsql pgsql soap \
+    && docker-php-ext-install xsl zip \
     && pecl install memcached redis xdebug \
-    && docker-php-ext-enable memcached redis xdebug \
+    && docker-php-ext-enable memcached.so redis.so xdebug.so \
     && apk del $buildDeps \
-    && rm -r /var/lib/apt/lists/*
+    && rm -rf /tmp/*
 
 # Install Composer.
 ENV COMPOSER_HOME /root/composer
