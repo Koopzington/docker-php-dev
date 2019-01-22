@@ -1,4 +1,4 @@
-FROM php:alpine
+FROM php:7.1-alpine
 MAINTAINER koopzington@gmail.com
 
 # Install PHP extensions and PECL modules.
@@ -21,12 +21,12 @@ RUN buildDeps=" \
         libxslt-dev \
         openldap-dev \
     " \
-    && apk update && apk add --no-cache $buildDeps $runtimeDeps \
-    && docker-php-ext-install bcmath bz2 calendar gd gettext intl ldap mysqli opcache pdo_mysql pdo_pgsql pgsql soap \
-    && docker-php-ext-install xsl zip \
-    && pecl install memcached redis xdebug \
-    && docker-php-ext-enable memcached.so redis.so xdebug.so \
-    && apk del $buildDeps \
+    && apk update && apk add --no-cache $buildDeps $runtimeDeps
+
+RUN docker-php-ext-install bcmath bz2 calendar gd gettext intl ldap mysqli opcache pdo_mysql pdo_pgsql pgsql soap xsl zip
+RUN pecl install memcached redis xdebug \
+    && docker-php-ext-enable memcached.so redis.so xdebug.so
+RUN apk del $buildDeps \
     && rm -rf /tmp/*
 
 # Install Composer.
